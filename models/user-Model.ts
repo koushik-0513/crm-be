@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, model, models } from "mongoose";
-import { TUser } from "../types";
+import { TUser, UserRole } from "../types";
 
 const user_schema = new Schema<TUser>(
   {
@@ -28,6 +28,42 @@ const user_schema = new Schema<TUser>(
       type: String,
       default: "",
     },
+    role: {
+      type: String,
+      enum: Object.values(UserRole),
+    },
+    teamCode: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+    organizationName: {
+      type: String,
+      default: "",
+    },
+    team: {
+      type: Schema.Types.ObjectId,
+      ref: "Team",
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    lastLoginAt: {
+      type: Date,
+      default: Date.now,
+    },
+    walkthrough: [{
+      page_name: {
+        type: String,
+        required: true,
+      },
+      completed: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
+    }],
   },
   {
     timestamps: true,

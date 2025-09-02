@@ -21,6 +21,7 @@ export const register_user = async (req: Request, res: Response): Promise<void> 
 
     // First check if user exists by uid
     let user = await User.findOne({ uid });
+    let isNewUser = false;
 
     if (!user) {
       // If not found by uid, check by email
@@ -33,23 +34,34 @@ export const register_user = async (req: Request, res: Response): Promise<void> 
           email,
           name: name || "",
           photoURL: photoURL || "",
+          // Don't set a default role - let user choose later
         });
         await user.save();
+        isNewUser = true;
       } else {
         // User exists by email but not uid, update the uid
         user.uid = uid;
         if (name) user.name = name;
         if (photoURL) user.photoURL = photoURL;
         await user.save();
+        isNewUser = false;
       }
     } else {
       // User exists by uid, update other fields if provided
       if (name) user.name = name;
       if (photoURL) user.photoURL = photoURL;
       await user.save();
+      isNewUser = false;
     }
 
-    res.status(201).json({ message: "User synced successfully", user });
+    res.status(201).json({ 
+      message: "User synced successfully", 
+      data: {
+        user,
+        isNew: isNewUser,
+        hasRole: !!user.role
+      }
+    });
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       console.error("Validation error:", error.errors);
@@ -60,8 +72,8 @@ export const register_user = async (req: Request, res: Response): Promise<void> 
       return;
     }
 
-          const errorMessage = error instanceof Error ? error.message : String(error)
-      console.error("Sync error:", errorMessage);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error("Sync error:", errorMessage);
     res.status(500).json({ error: "Failed to sync user" });
   }
 }; 

@@ -95,11 +95,22 @@ export const update_profile = async (req: Request, res: Response): Promise<void>
     res.status(200).json({
       success: true,
       user: {
+        _id: updatedUser._id,
+        uid: updatedUser.uid,
         name: updatedUser.name || "",
         email: updatedUser.email || "",
         phone: updatedUser.phone || "",
         company: updatedUser.company || "",
         photoUrl: updatedUser.photoUrl || "",
+        role: updatedUser.role || "",
+        organizationName: updatedUser.organizationName || "",
+        teamCode: updatedUser.teamCode || "",
+        team: updatedUser.team,
+        isActive: updatedUser.isActive,
+        lastLoginAt: updatedUser.lastLoginAt,
+        walkthrough: updatedUser.walkthrough || [],
+        createdAt: updatedUser.createdAt,
+        updatedAt: updatedUser.updatedAt,
       },
       message: "Profile updated successfully",
     });

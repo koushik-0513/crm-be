@@ -6,4 +6,4 @@
 firebase.json
 firebase.ts
 
-serviceAccountkey.json
+./serviceAccountkey.json

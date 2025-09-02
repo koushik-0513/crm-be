@@ -24,11 +24,22 @@ export const get_profile = async (req: Request, res: Response): Promise<void> =>
 
     res.status(200).json({
       user: {
+        _id: user._id,
+        uid: user.uid,
         name: user.name || "",
         email: user.email || "",
         phone: user.phone || "",
         company: user.company || "",
         photoUrl: user.photoUrl || "",
+        role: user.role || "",
+        organizationName: user.organizationName || "",
+        teamCode: user.teamCode || "",
+        team: user.team,
+        isActive: user.isActive,
+        lastLoginAt: user.lastLoginAt,
+        walkthrough: user.walkthrough || [],
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
       },
       message: "Profile retrieved successfully",
       success: true,

@@ -1,7 +1,6 @@
 import { Request } from 'express';
 import { Document } from 'mongoose';
 
-
 export enum ActivityTypes {
   CONTACT_CREATED = "CONTACT CREATED",
   CONTACT_DELETED = "CONTACT DELETED",
@@ -36,7 +35,34 @@ export enum ContentType {
   PREFERENCE = "preference"
 }
 
+// Role-based authentication types
+export enum UserRole {
+  ADMIN = "admin",
+  USER = "user",
+  INDIVIDUAL = "individual",
+}
 
+export enum NotificationType {
+  ADMIN_MESSAGE = "admin_message",
+  SYSTEM_NOTIFICATION = "system_notification",
+  CONTACT_UPDATE = "contact_update",
+  ACTIVITY_REMINDER = "activity_reminder",
+  TEAM_INVITE = "team_invite",
+  GENERAL = "general",
+}
+
+export enum NotificationStatus {
+  UNREAD = "unread",
+  READ = "read",
+  ARCHIVED = "archived",
+}
+
+export enum NotificationPriority {
+  LOW = "low",
+  MEDIUM = "medium",
+  HIGH = "high",
+  URGENT = "urgent",
+}
 
 export type TUser = Document & {
   uid: string;
@@ -45,6 +71,16 @@ export type TUser = Document & {
   phone?: string;
   company?: string;
   photoUrl?: string;
+  role?: UserRole; // Make role optional since new users won't have a default role
+  teamCode?: string;
+  organizationName?: string;
+  team?: string;
+  isActive: boolean;
+  lastLoginAt: Date;
+  walkthrough?: Array<{
+    page_name: string;
+    completed: boolean;
+  }>;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -135,7 +171,6 @@ export type TIVectorStore = Document & {
   updatedAt: Date;
 }
 
-
 export type TAIProviderConfig = {
   name: string;
   models: string[];
@@ -173,7 +208,6 @@ export type TAIProvider = {
   generateText: (options: TAIGenerateTextOptions) => Promise<TAIGenerateTextResponse>;
 }
 
-
 export type TSummarizedContext = {
   summary: string;
   messages: TUserMessage[];
@@ -185,7 +219,6 @@ export type TTokenConfig = {
   maxTokens: number;
   summaryPrompt: string;
 }
-
 
 export type TSearchResult = {
   content: string;
@@ -211,7 +244,6 @@ export type TContextResult = {
   similarity: number;
 }
 
-
 export type TSMSMessage = {
   to: string;
   text: string;
@@ -224,14 +256,12 @@ export type TSMSResponse = {
   };
 }
 
-
 export type TAuthenticatedRequest = Request & {
   user: {
     uid: string;
+    role?: UserRole;
   };
 }
-
-
 
 export type TFirebaseConfig = {
   apiKey: string;
@@ -240,4 +270,42 @@ export type TFirebaseConfig = {
   storageBucket: string;
   messagingSenderId: string;
   appId: string;
+}
+
+export type TTeam = Document & {
+  name: string;
+  code: string;
+  admin: string;
+  members: string[];
+  description?: string;
+  settings: {
+    allowMemberInvites: boolean;
+    maxMembers: number;
+    notificationPreferences: {
+      email: boolean;
+      push: boolean;
+      sms: boolean;
+    };
+  };
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export type TNotification = Document & {
+  recipient_uid: string;
+  sender_uid?: string;
+  title: string;
+  message: string;
+  type: NotificationType;
+  status: NotificationStatus;
+  priority: NotificationPriority;
+  metadata?: {
+    relatedId?: string;
+    relatedType?: string;
+    actionUrl?: string;
+    expiresAt?: Date;
+  };
+  readAt?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 } 

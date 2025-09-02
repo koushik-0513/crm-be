@@ -68,14 +68,17 @@ export const get_all_contacts = async (req: Request, res: Response) => {
     const total_pages = Math.ceil(total_contacts / limit_number);
 
     res.json({ 
+      success: true,
       message: "Contacts fetched successfully", 
-      contacts: contacts,
-      pagination: {
-        page: page_number,
-        limit: limit_number,
-        total: total_contacts,
-        total_pages: total_pages,
-        total_items: total_contacts,
+      data: {
+        contacts: contacts,
+        pagination: {
+          page: page_number,
+          limit: limit_number,
+          total: total_contacts,
+          total_pages: total_pages,
+          total_items: total_contacts,
+        }
       }
     });
   } catch (error: unknown) {

@@ -53,16 +53,19 @@ export const get_all_tags = async (req: Request, res: Response): Promise<void> =
     }
 
     res.json({
+      success: true,
       message: "Tags fetched successfully",
-      tags: tags,
-      tagCounts: tagCounts,
-      pagination: {
-        page: pageNum,
-        limit: limitNum,
-        total: totalTags,
-        total_pages: totalPages,
-        total_items: totalTags,
-      },
+      data: {
+        tags: tags,
+        tagCounts: tagCounts,
+        pagination: {
+          page: pageNum,
+          limit: limitNum,
+          total: totalTags,
+          total_pages: totalPages,
+          total_items: totalTags,
+        },
+      }
     });
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
